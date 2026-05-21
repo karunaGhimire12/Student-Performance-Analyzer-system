@@ -1,12 +1,11 @@
 #CREATE API ROUTE
-"""his file creates API routes/endpoints using FastAPI and connects:
+"""This file creates API routes/endpoints using FastAPI and connects:
 client requests
 schemas
 database
  CRUD operations"""
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
 from backend.database.connection import SessionLocal
 from backend.database import crud
 from backend.schemas.student_schema import (
