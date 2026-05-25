@@ -1,66 +1,29 @@
-#CREATE API ROUTE
-"""This file creates API routes/endpoints using FastAPI and connects:
-client requests
-schemas
-database
- CRUD operations"""
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import List
+
 from backend.database.connection import SessionLocal
 from backend.database import crud
-from backend.schemas.student_schema import (
-    StudentCreate,
-    StudentResponse
-)
+from backend.schemas.student_schema import StudentResponse
 
+router = APIRouter(prefix="/students", tags=["Student Core Profiles"])
 
-router = APIRouter()
-
-
-# DATABASE SESSION
 def get_db():
-
     db = SessionLocal()
-
     try:
         yield db
-
     finally:
         db.close()
 
-
-# CREATE STUDENT
-@router.post("/students", response_model=StudentResponse)
-def create_student(
-    student: StudentCreate,
-    db: Session = Depends(get_db)
-):
-
-    return crud.create_student(db, student)
-
-
-# GET ALL STUDENTS
-@router.get("/students")
-def get_students(db: Session = Depends(get_db)):
-
+# Standard route to view all registered students
+@router.get("", response_model=List[StudentResponse])
+def read_all_students(db: Session = Depends(get_db)):
     return crud.get_students(db)
 
-
-# GET SINGLE STUDENT
-@router.get("/students/{student_id}")
-def get_student(
-    student_id: int,
-    db: Session = Depends(get_db)
-):
-
-    return crud.get_student(db, student_id)
-
-
-# DELETE STUDENT
-@router.delete("/students/{student_id}")
-def delete_student(
-    student_id: int,
-    db: Session = Depends(get_db)
-):
-
-    return crud.delete_student(db, student_id)
+# Standard route to delete an individual student
+@router.delete("/{student_id}")
+def remove_student_profile(student_id: int, db: Session = Depends(get_db)):
+    deleted = crud.delete_student(db, student_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Student record not found.")
+    return {"status": "success", "message": "Profile removed successfully."}
