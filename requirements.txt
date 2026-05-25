@@ -51,4 +51,11 @@ urllib3==2.6.3
 uvicorn==0.46.0
 watchdog==6.0.0
 websockets==16.0
-
+streamlit-aggrid
+python-decouple==3.8
+python-dotenv==1.2.2
+PyYAML==6.0.3
+setuptools==82.0.1
+streamlit-aggrid==1.2.1.post2
+watchfiles==1.2.0
+wheel==0.47.0
