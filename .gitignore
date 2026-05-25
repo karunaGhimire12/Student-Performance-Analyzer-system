@@ -20,3 +20,4 @@ test*
 backend/__pycache__/
 */__pycache__/
 *.db
+.stramlit/
