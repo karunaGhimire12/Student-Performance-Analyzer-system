@@ -1,34 +1,12 @@
-# #CREATE FASTAPI APP
-
-# from fastapi import FastAPI
-
-# from backend.database.connection import engine
-# from backend.database.models import Base
-
-# # import routers
-# from backend.routers import students, results
-
-
-# Base.metadata.create_all(bind=engine)
-
-# app = FastAPI()
-
-# # include API routers under /api
-# app.include_router(students.router, prefix="/api")
-# app.include_router(results.router, prefix="/api")
-
-
-# @app.get("/")
-# def home():
-#     return {"message": "Student Performance Analyzer API"}
-# backend/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routers import students, results  # Import both router files
+from backend.database.connection import engine, Base
 
-app = FastAPI(title="Student Performance Analyzer Backend")
+# Import all separate router files
+from backend.routers import students_routes, results_routes, analytics_routes
 
-# Allow Streamlit to communicate with FastAPI without CORS blocks
+app = FastAPI(title="EduMetrics Pro Backend Server")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -37,11 +15,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# REGISTER ROUTERS EXPLICITLY
-# If you don't declare prefixes here, they use the ones defined inside the router files
-app.include_router(students.router)
-app.include_router(results.router)
+# Create database tables automatically
+Base.metadata.create_all(bind=engine)
+
+# Plug in the separate modules cleanly
+app.include_router(students_routes.router)
+app.include_router(results_routes.router)
+app.include_router(analytics_routes.router)
 
 @app.get("/")
-def root():
-    return {"message": "API Engine Online"}
+def read_root():
+    return {"status": "Online", "message": "Server running smoothly."}

@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 # from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import declarative_base
 
-DATABASE_URL = "sqlite:///./data/students.db"
+DATABASE_URL = "sqlite:///./data/students_detail.db"
 
 #Databse connection
 #connect python with database
@@ -21,3 +21,10 @@ SessionLocal = sessionmaker(
 )
 #It helpsto create database table
 Base = declarative_base()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

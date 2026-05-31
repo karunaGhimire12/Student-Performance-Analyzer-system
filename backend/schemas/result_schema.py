@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 # ==========================================
 # STANDARD RESULT SCHEMAS
@@ -14,19 +15,19 @@ class ResultCreate(BaseModel):
     social: int
     attendance: int
 
-
 class ResultResponse(ResultCreate):
     id: int
+    # ➕ ADD THESE: So FastAPI can include them in the JSON responses!
+    average: float
+    division: str
 
     class Config:
         from_attributes = True
 
 
-
-# ADD THIS: SPREADSHEET ROW SCHEMA FOR BULK ROUTE
-
-# This is what bridges the gap! It contains fields from BOTH 
-# the Student table (name, roll, student_class) and the Result table.
+# ==========================================
+# SPREADSHEET ROW SCHEMA FOR BULK ROUTE
+# ==========================================
 class SpreadsheetRow(BaseModel):
     roll: int
     name: str
@@ -35,7 +36,11 @@ class SpreadsheetRow(BaseModel):
     year: int
     english: int
     nepali: int
-    mathematics: int
-    science: int
-    social: int
-    attendance: int
+    mathematics:int
+    science:int
+    social:int
+    attendance:int
+
+    """# ➕ ADD THESE: So your combined table layout can load them from the spreadsheet!
+    average_mark: Optional[float] = None
+    division: Optional[str] = None """

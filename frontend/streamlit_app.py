@@ -219,17 +219,17 @@ with tab1:
     # Initialize your 10 empty rows in session state if not already there
     if "df" not in st.session_state:
         st.session_state.df = pd.DataFrame({
-            "roll": [i for i in range(1, 11)],
-            "name": [""] * 10,
-            "student_class": ["10"] * 10,
-            "term": ["First Term"] * 10,
-            "year": [2026] * 10,
-            "english": [0] * 10,
-            "nepali": [0] * 10,
-            "mathematics": [0] * 10,
-            "science": [0] * 10,
-            "social": [0] * 10,
-            "attendance": [0] * 10
+            "roll": [i for i in range(1, 6)],
+            "name": [""] * 5,
+            "student_class": ["10"] * 5,
+            "term": ["First Term"] * 5,
+            "year": [2026] * 5,
+            "english": [0] * 5,
+            "nepali": [0] * 5,
+            "mathematics": [0] * 5,
+            "science": [0] * 5,
+            "social": [0] * 5,
+            "attendance": [0] * 5
         })
 
     # Configure AG Grid column options
