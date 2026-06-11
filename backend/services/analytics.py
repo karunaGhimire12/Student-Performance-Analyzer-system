@@ -1,62 +1,159 @@
+# services/analytics.py
 from sqlalchemy.orm import Session
-from backend.database import models
-
-
-#Individual student calculations
-def calculate_average_and_division(english:int,nepali:int,mathematics:int,science:int,social:int):
-    """
-    Calculates the average percentage for a single student 
-    and determines their division tier.
-    """
-    total_marks=english+nepali+mathematics+science+social
-    average=total_marks/5.0
-    if average>=90:
-        division="A+"
-    if average>=80:
-        division="A"
-    if average>=70:
-        division="B+"
-    if average>=60:
-        division="B"
-    if average>=50:
-        division="C+"
-    if average>=40:
-        division="C"
-    if average>=35:
-        division="D"
-    else:
-        division="D"
-    return average,division
-
-def get_top_students(db:Session,limit:int=5):
-    """Fetches studentas sorting from highest average (A+/A) down to lowest """
-    return db.query(models.Result).order_by (models.Result.average.desc().limit(limit).all())
-
-
-def get_strugling_students(db:Session,limit:int=5):
-    return db.query(models.Result).filter (models.Result.averge<40.0)\
-                .order_by(models.Result.average.asc()).all()
-
-
-def get_average_students(db:Session):
-    """
-    Fetches mid-tier students whose scores match C+ up to A grades 
-    (Between 40% and 80%).
-    """
-    return db.query(models.Result)\
-             .filter(models.Result.average >= 40.0)\
-             .filter(models.Result.average< 80.0)\
-             .all()
+from backend.database import Result, Student
+from backend.utils import calculate_result_analysis
+# =====================================================
+# STUDENT HISTORY
+# =====================================================
 
 def get_student_history(db: Session, student_id: int):
-    """
-    Fetches all performance records for a single student ID
-    ordered by year and term to track their growth.
-    """
-    return (
-        db.query(models.Result)
-        .filter(models.Result.student_id == student_id)
-        .order_by(models.Result.year.asc(), models.Result.term.asc())
+
+    results = (
+        db.query(Result)
+        .filter(Result.student_id == student_id)
+        .order_by(Result.year.asc(), Result.term.asc())
         .all()
     )
 
+    response = []
+
+    for result in results:
+
+        analysis = calculate_result_analysis(
+            result.english,
+            result.nepali,
+            result.mathematics,
+            result.science,
+            result.social
+        )
+
+        response.append({
+            "id": result.result_id,
+            "year": result.year,
+            "term": result.term,
+
+            "english": result.english,
+            "nepali": result.nepali,
+            "mathematics": result.mathematics,
+            "science": result.science,
+            "social": result.social,
+
+            "average": analysis["average"],
+            "division": analysis["division"],
+            "category": analysis["category"]
+        })
+
+    return response
+def _get_students_by_categories(
+    db: Session,
+    year:int,
+    term:str,
+    student_class: str,
+    allowed_categories: list
+):
+    students = []
+
+    results = (
+        db.query(Result)
+        .join(Student)
+        .filter(Result.year==year,
+                Result.term==term.strip(),
+                Student.student_class == student_class.strip()
+                )
+              .order_by(Result.average.desc(),
+                        )
+              .all()
+    )
+
+    for result in results:
+
+        analysis =calculate_result_analysis(result.english,
+            result.nepali,
+            result.mathematics,
+            result.science,
+            result.social)
+
+        if analysis["category"] in allowed_categories:
+
+            students.append({
+                "student_id": result.student.student_id,
+                "name": result.student.name,
+                "student_class": result.student.student_class,
+                "term": result.term,
+                "year": result.year,
+                "average": result.average,
+                "division": analysis["division"],
+                "category": analysis["category"]
+            })
+
+    return students
+
+
+
+""" Excellent          -> Top Performance
+Good + Average         -> Average Performance
+Weak + Struggling      -> Weak Performance """
+
+
+# =====================================================
+# TOP PERFORMANCE STUDENTS
+# Excellent
+# =====================================================
+
+def get_top_performance_students(
+    db: Session,
+    year:int,
+    term:str,
+    student_class: str
+):
+
+    return _get_students_by_categories(
+        db,
+        year,
+        term,
+        student_class,
+        ["Excellent"]
+    )
+
+
+# =====================================================
+# AVERAGE PERFORMANCE STUDENTS
+# Good + Average
+# =====================================================
+
+def get_average_performance_students(
+    db: Session,
+    year:int,
+    term:str,
+    student_class: str
+):
+
+    return _get_students_by_categories(
+        db,
+        year,
+        term,
+        student_class,
+        ["Good", "Average"]
+    )
+
+
+# =====================================================
+# WEAK PERFORMANCE STUDENTS
+# Weak + Struggling
+# =====================================================
+
+def get_weak_performance_students(
+    db: Session,
+    year,
+    term,
+    student_class: str
+
+):
+
+    return _get_students_by_categories(
+        db,
+        year,
+        term,
+        student_class,
+        ["Weak", "Struggling"]
+    )
