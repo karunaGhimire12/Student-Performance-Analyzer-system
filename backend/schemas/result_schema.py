@@ -1,8 +1,7 @@
+#backend/schemas/result_schema.py
 from pydantic import BaseModel
-from typing import Optional
-
 # ==========================================
-# STANDARD RESULT SCHEMAS
+# INPUT (Frontend → Backend)
 # ==========================================
 class ResultCreate(BaseModel):
     student_id: int
@@ -15,14 +14,30 @@ class ResultCreate(BaseModel):
     social: int
     attendance: int
 
-class ResultResponse(ResultCreate):
-    id: int
-    # ➕ ADD THESE: So FastAPI can include them in the JSON responses!
+
+# ==========================================
+# OUTPUT (Backend → Frontend)
+# ==========================================
+class ResultResponse(BaseModel):
+    result_id: int
+    student_id:int
+    term: str
+    year: int
+    english: int
+    nepali: int
+    mathematics: int
+    science: int
+    social: int
+    attendance: int
+
+    #THESE  CALCULATION COME FROM BACKEND ANALYTICS
     average: float
     division: str
+    category: str
 
     class Config:
         from_attributes = True
+
 
 
 # ==========================================
@@ -42,5 +57,5 @@ class SpreadsheetRow(BaseModel):
     attendance:int
 
     """# ➕ ADD THESE: So your combined table layout can load them from the spreadsheet!
-    average_mark: Optional[float] = None
+    average: Optional[float] = None
     division: Optional[str] = None """

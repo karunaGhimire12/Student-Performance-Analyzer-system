@@ -19,12 +19,12 @@ SessionLocal = sessionmaker(
     autoflush=False,
     bind=engine
 )
-#It helpsto create database table
+#It helps to create database table
 Base = declarative_base()
 
 def get_db():
     db = SessionLocal()
     try:
-        yield db
+        yield db #Sends db to your route function and keeps function paused here
     finally:
         db.close()

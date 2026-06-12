@@ -1,20 +1,24 @@
+#backend/schemas/student_schema.py
+
 from pydantic import BaseModel
+
 
 # ==========================================
 # CREATE STUDENT SCHEMA
 # ==========================================
-# This matches your SQLAlchemy Student model exactly!
+# This matches SQLAlchemy Student model exactly!
+
 class StudentCreate(BaseModel):
+    roll: int
     name: str
     student_class: str
-    roll: int
-
+   
 
 # ==========================================
 # RESPONSE SCHEMA
 # ==========================================
 class StudentResponse(StudentCreate):
-    id: int
-
+    student_id: int
+    
     class Config:
         from_attributes = True

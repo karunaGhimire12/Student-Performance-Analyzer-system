@@ -1,2 +1,2 @@
-from .result_schema import SpreadsheetRow
+from .result_schema import ResultCreate,ResultResponse,SpreadsheetRow
 from .student_schema import StudentCreate,StudentResponse

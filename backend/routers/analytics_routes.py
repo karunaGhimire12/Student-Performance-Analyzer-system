@@ -1,36 +1,84 @@
 # backend/routers/analytics_routes.py
-from fastapi import APIRouter, Depends
+
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
-# Import our database connection session and our math calculation file
-from backend.database import get_db 
+from backend.database import get_db
 from backend.services import analytics
 
-# Initialize the router block instead of using 'app = FastAPI()'
 router = APIRouter(
     prefix="/analytics",
-    tags=["School Analytics Metrics Portal"]
+    tags=["Student Report Cards and Analytics"]
 )
 
-# =========================================================================
-# THE SEPARATE ANALYTICS WEB ROUTES
-# =========================================================================
 
-@router.get("/top-students")
-def get_top_leaderboard(db: Session = Depends(get_db)):
-    """Fetches the top 5 performing student rows."""
-    return analytics.get_top_students(db)
-
-@router.get("/weak-students")
-def get_struggling_list(db: Session = Depends(get_db)):
-    """Fetches ALL students scoring below C+ (50%)."""
-    return analytics.get_struggling_students(db)
-
-@router.get("/average-students")
-def get_average_list(db: Session = Depends(get_db)):
-    """Fetches students scoring in the mid-tier (50% - 80%)."""
-    return analytics.get_average_students(db)
+# =====================================================
+# STUDENT HISTORY
+# =====================================================
 
 @router.get("/student-history/{student_id}")
-def get_history(student_id: int, db: Session = Depends(get_db)):
-    return analytics.get_student_history(db, student_id)
+def get_student_history(
+    student_id: int,
+    db: Session = Depends(get_db)
+):
+    return analytics.get_student_history(
+        db,
+        student_id
+    )
+
+
+# =====================================================
+# TOP PERFORMANCE STUDENTS
+# =====================================================
+
+@router.get("/top-performance-students")
+def get_top_students(
+    year: int,
+    term: str,
+    student_class: str = Query(...),
+    db: Session = Depends(get_db)
+):
+    return analytics.get_top_performance_students(
+        db,
+        year,
+        term,
+        student_class
+    )
+
+
+# =====================================================
+# AVERAGE PERFORMANCE STUDENTS
+# =====================================================
+
+@router.get("/average-performance-students")
+def get_average_students(
+    year: int,
+    term: str,
+    student_class: str = Query(...),
+    db: Session = Depends(get_db)
+):
+    return analytics.get_average_performance_students(
+        db,
+        year,
+        term,
+        student_class
+    )
+
+
+# =====================================================
+# WEAK PERFORMANCE STUDENTS
+# =====================================================
+
+@router.get("/weak-performance-students")
+def get_weak_students(
+    year: int,
+    term: str,
+    student_class: str = Query(...),
+    db: Session = Depends(get_db)
+):
+    return analytics.get_weak_performance_students(
+        db,
+        year,
+        term,
+        student_class
+    )
