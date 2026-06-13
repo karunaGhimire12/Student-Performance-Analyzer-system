@@ -1,0 +1,17 @@
+[33mcommit 0074d28fd6cefe1575461ce8b5dca127106c0c5b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mbranch1[m[33m, [m[1;31morigin/branch1[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: karunaGhimire12 <karunaghimire2007@gmail.com>
+Date:   Sat Jun 13 14:44:27 2026 +0545
+
+    feat: improve project setup with config management and optimized startup
+
+[33mcommit 1ffc95a22c102cbc11dab53f288a8a0561351b67[m
+Author: karunaGhimire12 <karunaghimire2007@gmail.com>
+Date:   Thu Jun 11 23:05:28 2026 +0545
+
+    feat:add student academic history service
+
+[33mcommit 01e0591678dfbf94d935ebc456254ed7a61e5f7a[m[33m ([m[1;31morigin/newbranch1[m[33m, [m[1;32mnewbranch1[m[33m)[m
+Author: karunaGhimire12 <karunaghimire2007@gmail.com>
+Date:   Sun May 31 20:05:03 2026 +0545
+
+    fix(database): rename average column and align SQLAlchemy models with CRUD logic
