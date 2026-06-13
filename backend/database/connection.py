@@ -4,8 +4,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 # from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import declarative_base
+from backend.config import DATABASE_URL
 
-DATABASE_URL = "sqlite:///./data/students_detail.db"
 
 #Databse connection
 #connect python with database
