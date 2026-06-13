@@ -18,6 +18,5 @@ staticfiles/
 test*
 *vscode/
 backend/__pycache__/
-**/__pycache__/
 *.db
 .stramlit/
