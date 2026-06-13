@@ -16,8 +16,5 @@ staticfiles/
 .DS_Store
 .idea/
 test*
-*vscode/
-backend/__pycache__/
-*/__pycache__/
+backend/_pycache__
 *.db
-.stramlit/
