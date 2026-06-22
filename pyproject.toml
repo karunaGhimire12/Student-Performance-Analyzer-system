@@ -1,6 +1,8 @@
 [tool.taskipy.tasks]
 
 start = "python run.py"
+# 2. Runs your smart environment script to install dependencies or sync new packages
+setup = "powershell -ExecutionPolicy Bypass -File ./setup_venv.ps1"
 
 dev = "uvicorn backend.main:app --reload"
 
