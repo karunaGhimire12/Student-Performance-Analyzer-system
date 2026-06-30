@@ -25,7 +25,23 @@ export const getStudentById = (studentId) =>
 export const deleteStudent = (studentId) =>
   api.delete(`/students/${studentId}`);
 
+
+
 // ─── ANALYTICS ────────────────────────────────────────────
+export const getDashboardAnalytics= (
+  year,
+  term,
+  studentClass
+)=>{
+  return api.get("/analytics/dashboard",{
+    params:{year,
+      term,
+      student_class:studentClass
+    },
+  });
+};
+
+
 export const getTopStudents = (year, term, studentClass) =>
   api.get('/analytics/top-performance-students', {
     params: { year, term, student_class: studentClass },

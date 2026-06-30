@@ -11,7 +11,23 @@ router = APIRouter(
     tags=["Student Report Cards and Analytics"]
 )
 
+# =====================================================
+# TEACHER DASHBOARD ANALYTICS
+# =====================================================
 
+@router.get("/dashboard")
+def get_dashboard(
+    year: int,
+    term: str,
+    student_class: str = Query(...),
+    db: Session = Depends(get_db)
+):
+    return analytics.get_dashboard_analytics(
+        db,
+        year,
+        term,
+        student_class
+    )
 # =====================================================
 # STUDENT HISTORY
 # =====================================================
