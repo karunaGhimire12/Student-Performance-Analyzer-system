@@ -2,6 +2,72 @@
 from sqlalchemy.orm import Session
 from backend.database import Result, Student
 from backend.utils import calculate_result_analysis
+
+#======================================================
+#STUDENT DASHBOARD WITH REAPECT TO THEIR CATEGORY
+#======================================================
+def get_dashboard_analytics(
+        db:Session,
+        year:int,
+        term:str,
+        student_class:str
+):
+    results=(
+        db.query(Result)
+        .join(Student)
+        .filter(
+            Result.year==year,
+            Result.term==term.strip(),
+            Student.student_class==student_class.strip()
+        )
+        .order_by(Result.average.desc ()).all()
+    )
+
+    dashboard={
+        "excellent": [],
+        "good": [],
+        "average": [],
+        "weak": [],
+        "struggling": []
+    }
+
+    for result in results:
+        analysis = calculate_result_analysis(
+            result.english,
+            result.nepali,
+            result.mathematics,
+            result.science,
+            result.social
+        )
+        student = {
+                "student_id": result.student.student_id,
+                "name": result.student.name,
+                "student_class": result.student.student_class,
+                "year": result.year,
+                "term": result.term,
+                "average": analysis["average"],
+                "division": analysis["division"],
+                "category": analysis["category"],
+        }
+
+
+        # Add student to the correct category
+        dashboard[analysis["category"].lower()].append(student)
+
+        
+    return {
+    "summary": {
+        "total": len(results),
+        "excellent": len(dashboard["excellent"]),
+        "good": len(dashboard["good"]),
+        "average": len(dashboard["average"]),
+        "weak": len(dashboard["weak"]),
+        "struggling": len(dashboard["struggling"]),
+    },
+    "students": dashboard,
+    }
+
+    
 # =====================================================
 # STUDENT HISTORY
 # =====================================================
